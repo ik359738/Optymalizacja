@@ -1,0 +1,45 @@
+#Gra Blotto - gracze rozdzielaja wojska na odpowiednie pole bitwy
+#dla S=6 istnieja trzy mozliwe ustawienia (1,1,4),(1,2,3),(2,2,2),
+# dla ustalenia (1,1,4) vs.(1,2,3) remis, (1,2,3) vs.(2,2,2) remis, (2,2,2) wygrywa z (1,1,4)
+
+import numpy
+
+matrix = numpy.array([[0, 0, 1], [0, 0, 0], [-1, 0, 0]])
+x = matrix.shape[0]
+y = matrix.shape[1]
+
+show (matrix)
+
+c = [0]*x
+c.append(1)
+b = [0]*y
+b.append(1)
+
+show(c)
+show(b)
+
+column = [[-1]]*y
+row = numpy.append([[1]*x], [[0]], axis=1)
+A = matrix.transpose()
+
+show(A)
+show(())
+
+A = numpy.append(A, column, axis=1)
+show(A)
+show(())
+
+A = numpy.append(A, row, axis=0)
+show(A)
+
+
+con = [">="]*y
+con.append("==")
+var = [">="]*x
+var.append("")
+
+Bolotto = InteractiveLPProblem(A, b, c, constraint_type = con, variable_type = var)
+show(Bolotto)
+
+
+show(Bolotto.standard_form().run_simplex_method())

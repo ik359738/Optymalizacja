@@ -1,0 +1,97 @@
+import numpy
+
+def dot(matrix, vector):
+    out = []
+    for i in range(0, len(matrix)):
+        c = 0.0
+        for j in range(0, len(vector)):
+            c = c + matrix[i][j] * vector[j]
+        out.append(c)
+    return out
+
+f=(raw_input("Min or Max: "))
+if f == "Min" :
+  print ("Minimize")
+else:
+  print ("Maximize")
+  
+n = int(raw_input("Wprowadz n: "))
+print n
+funkcja_celu = []
+for i in range (0, n):
+   funkcja_celu.append(int(raw_input("wprowadz wspolczynniki przy x" + str(i + 1) + ': '))) 
+
+m = int(raw_input("Wprowadz liczbe ograniczen: "))
+A = []
+b = []
+for i in range(0, m):
+    a = []
+    print 'ograniczenie', i + 1
+    for j in range(0, n):
+        a.append(int(raw_input('Podaj wspolczynnik przy x' + str(j + 1) + ': ')))
+    b.append(int(raw_input('Podaj liczbe po prawej stronie nierownosci: ')))
+    for j in range(0, m):
+        if i == j:
+            a.append(1)
+        else:
+            a.append(0)
+    A.append(a)
+    funkcja_celu.append(0)
+
+if f == 'Min':
+    for i in range(0, len(funkcja_celu)):
+        funkcja_celu[i] = -funkcja_celu[i]
+
+funkcja_celu = [funkcja_celu]
+k = m + n
+
+def iter(next, choosen, answer):
+    if next == k:
+        if len(choosen) == m:
+            AK = []
+            for i in range(0, m):
+                wiersz = []
+                for j in choosen:
+                    wiersz.append(A[i][j])
+                AK.append(wiersz)
+
+            if numpy.linalg.matrix_rank(AK) == m:
+                maxX = answer[0]
+                maxV = answer[1]
+                
+                vk = dot(numpy.linalg.inv(AK), b)
+                i = 0
+                v = []
+                for j in range(0, k):
+                    if i < m and j == choosen[i]:
+                        v.append(vk[i])
+                        i = i + 1
+                    else:
+                        v.append(0.0)
+                        
+                if dot(funkcja_celu, v)[0] > maxV:
+                    maxX = v[:n]
+                    maxV = dot(funkcja_celu, v)[0]
+                
+                answer[0] = maxX
+                answer[1] = maxV
+                
+    else:
+        iter(next + 1, choosen, answer)
+        if len(choosen) < m:
+            choosen.append(next)
+            iter(next + 1, choosen, answer)
+            choosen.pop()
+
+answer = [[], float('-inf')]
+choosen = []
+iter(0, choosen, answer)
+maxX = answer[0]
+maxV = answer[1]
+
+if f == 'Min':
+    print 'Minimalna wartosc to:', -maxV
+    print 'Minimalna wartosc przyjmowana dla:', maxX
+else:
+    print 'Maksymalna wartosc to:', maxV
+    print 'Maksymalna wartosc przyjmowana dla:', maxX
